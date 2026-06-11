@@ -1,9 +1,9 @@
-import { Consultation, IConsultation } from '../models/Consultation.js';
-import { Client } from '../models/Client.js';
-import { RecordingService } from './recording.service.js';
-import { TranscriptService } from './transcript.service.js';
-import { SummaryService } from './summary.service.js';
-import { ApiError } from '../utils/ApiError.js';
+import { Consultation, IConsultation } from '../models/Consultation';
+import { Client } from '../models/Client';
+import { RecordingService } from './recording.service';
+import { TranscriptService } from './transcript.service';
+import { SummaryService } from './summary.service';
+import { ApiError } from '../utils/ApiError';
 import { Types } from 'mongoose';
 
 export interface IConsultationFilters {

@@ -1,7 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { ApiError } from '../utils/ApiError.js';
+import { ApiError } from '../utils/ApiError';
 
 const UPLOAD_DIR = './uploads';
 
@@ -22,13 +22,18 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowedExtensions = ['.mp3', '.wav', '.m4a', '.ogg'];
+  const allowedExtensions = ['.mp3', '.wav', '.m4a', '.ogg', '.webm'];
   const ext = path.extname(file.originalname).toLowerCase();
-  
-  if (allowedExtensions.includes(ext)) {
+  const mime = file.mimetype.toLowerCase();
+
+  const extOk = ext && allowedExtensions.includes(ext);
+  const mimeOk = mime.startsWith('audio/');
+
+
+  if (extOk || mimeOk) {
     cb(null, true);
   } else {
-    cb(new ApiError(400, `Unsupported file format: ${ext}. Supported formats are mp3, wav, m4a, ogg.`) as any);
+    cb(new ApiError(400, `Unsupported file format: ${ext} & mime=${mime}. Supported formats are mp3, wav, m4a, ogg, webm.`) as any);
   }
 };
 

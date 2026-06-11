@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { AuthService } from '../services/auth.service.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { ApiError } from '../utils/ApiError.js';
-import { AuthenticatedRequest } from '../middleware/auth.middleware.js';
+import { AuthService } from '../services/auth.service';
+import { ApiResponse } from '../utils/ApiResponse';
+import { ApiError } from '../utils/ApiError';
+import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 export class AuthController {
   /**

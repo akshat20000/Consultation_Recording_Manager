@@ -1,6 +1,6 @@
-import { cloudinary } from '../config/cloudinary.js';
-import { isCloudinaryConfigured } from '../config/env.js';
-import { ApiError } from '../utils/ApiError.js';
+import { cloudinary } from '../config/cloudinary';
+import { isCloudinaryConfigured } from '../config/env';
+import { ApiError } from '../utils/ApiError';
 import fs from 'fs';
 
 export class CloudinaryService {

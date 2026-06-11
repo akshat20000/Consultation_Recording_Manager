@@ -1,9 +1,9 @@
 import { Response, NextFunction } from 'express';
-import { ConsultationService } from '../services/consultation.service.js';
-import { ExportService } from '../services/export.service.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { ApiError } from '../utils/ApiError.js';
-import { AuthenticatedRequest } from '../middleware/auth.middleware.js';
+import { ConsultationService } from '../services/consultation.service';
+import { ExportService } from '../services/export.service';
+import { ApiResponse } from '../utils/ApiResponse';
+import { ApiError } from '../utils/ApiError';
+import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 export class ConsultationController {
   /**
@@ -12,7 +12,7 @@ export class ConsultationController {
   static async create(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const userId = req.user!._id.toString();
-      
+
       if (!req.file) {
         throw new ApiError(400, 'Audio recording file is required');
       }
@@ -28,6 +28,7 @@ export class ConsultationController {
         .status(201)
         .json(new ApiResponse(201, consultation, 'Consultation recorded and saved successfully'));
     } catch (error) {
+      console.log(" consultaion.controller.ts,line31", error);
       return next(error);
     }
   }

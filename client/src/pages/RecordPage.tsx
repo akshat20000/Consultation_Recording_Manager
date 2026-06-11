@@ -69,7 +69,6 @@ export const RecordPage: React.FC = () => {
     setConsentTimestamp(timestamp);
     setErrorMsg('');
   };
-
   const handleSave = () => {
     setErrorMsg('');
 

@@ -1,5 +1,5 @@
-import { Consultation } from '../models/Consultation.js';
-import { Client } from '../models/Client.js';
+import { Consultation } from '../models/Consultation';
+import { Client } from '../models/Client';
 import { Types } from 'mongoose';
 
 export class AnalyticsService {

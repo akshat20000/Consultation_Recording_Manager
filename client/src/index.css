@@ -28,11 +28,11 @@
 }
 
 .astro-button-primary {
-  @apply bg-gradient-to-r from-astrology-600 to-indigo-600 hover:from-astrology-500 hover:to-indigo-500 text-white font-medium px-5 py-3 rounded-xl shadow-lg shadow-astrology-950/50 active:scale-98 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none;
+  @apply bg-gradient-to-r from-astrology-600 to-indigo-600 hover:from-astrology-500 hover:to-indigo-500 text-white font-medium px-5 py-3 rounded-xl shadow-lg shadow-astrology-950/50 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none;
 }
 
 .astro-button-secondary {
-  @apply bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 font-medium px-5 py-3 rounded-xl transition-all duration-200 active:scale-98;
+  @apply bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 font-medium px-5 py-3 rounded-xl transition-all duration-200 active:scale-95;
 }
 
 /* Audio Waveform Pulse animation */

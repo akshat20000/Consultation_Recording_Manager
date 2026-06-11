@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { isCloudinaryConfigured } from '../config/env.js';
-import { CloudinaryService } from './cloudinary.service.js';
+import { isCloudinaryConfigured } from '../config/env';
+import { CloudinaryService } from './cloudinary.service';
 
 export class RecordingService {
   /**

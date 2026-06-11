@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { User, IUser } from '../models/User.js';
-import { env } from '../config/env.js';
-import { ApiError } from '../utils/ApiError.js';
+import { User, IUser } from '../models/User';
+import { env } from '../config/env';
+import { ApiError } from '../utils/ApiError';
 
 export interface IAuthResult {
   user: {

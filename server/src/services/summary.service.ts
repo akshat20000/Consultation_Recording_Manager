@@ -1,4 +1,4 @@
-import { IConsultationSummary } from '../models/Consultation.js';
+import { IConsultationSummary } from '../models/Consultation';
 
 export class SummaryService {
   /**

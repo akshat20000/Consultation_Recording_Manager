@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import authRoutes from './routes/auth.routes.js';
-import clientRoutes from './routes/client.routes.js';
-import consultationRoutes from './routes/consultation.routes.js';
-import analyticsRoutes from './routes/analytics.routes.js';
-import { errorHandler } from './middleware/error.middleware.js';
+import authRoutes from './routes/auth.routes';
+import clientRoutes from './routes/client.routes';
+import consultationRoutes from './routes/consultation.routes';
+import analyticsRoutes from './routes/analytics.routes';
+import { errorHandler } from './middleware/error.middleware';
 
 const app = express();
 

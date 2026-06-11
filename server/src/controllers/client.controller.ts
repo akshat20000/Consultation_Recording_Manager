@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
-import { ClientService } from '../services/client.service.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { AuthenticatedRequest } from '../middleware/auth.middleware.js';
+import { ClientService } from '../services/client.service';
+import { ApiResponse } from '../utils/ApiResponse';
+import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 export class ClientController {
   /**

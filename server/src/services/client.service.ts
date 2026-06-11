@@ -1,5 +1,5 @@
-import { Client, IClient } from '../models/Client.js';
-import { ApiError } from '../utils/ApiError.js';
+import { Client, IClient } from '../models/Client';
+import { ApiError } from '../utils/ApiError';
 import { Types } from 'mongoose';
 
 export class ClientService {

@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { env, isCloudinaryConfigured } from './env.js';
+import { env, isCloudinaryConfigured } from './env';
 
 if (isCloudinaryConfigured) {
   cloudinary.config({

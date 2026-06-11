@@ -1,4 +1,4 @@
-import { IConsultation } from '../models/Consultation.js';
+import { IConsultation } from '../models/Consultation';
 
 export class ExportService {
   /**

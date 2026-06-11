@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { AuthService } from '../services/auth.service.js';
-import { User, IUser } from '../models/User.js';
-import { ApiError } from '../utils/ApiError.js';
+import { AuthService } from '../services/auth.service';
+import { User, IUser } from '../models/User';
+import { ApiError } from '../utils/ApiError';
 
 export interface AuthenticatedRequest extends Request {
   user?: IUser;

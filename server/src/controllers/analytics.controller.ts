@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
-import { AnalyticsService } from '../services/analytics.service.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { AuthenticatedRequest } from '../middleware/auth.middleware.js';
+import { AnalyticsService } from '../services/analytics.service';
+import { ApiResponse } from '../utils/ApiResponse';
+import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 export class AnalyticsController {
   /**

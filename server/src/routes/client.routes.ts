@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { ClientController } from '../controllers/client.controller.js';
-import { validate } from '../middleware/validate.middleware.js';
-import { protect } from '../middleware/auth.middleware.js';
-import { createClientSchema, updateClientSchema } from '../validators/client.validator.js';
+import { ClientController } from '../controllers/client.controller';
+import { validate } from '../middleware/validate.middleware';
+import { protect } from '../middleware/auth.middleware';
+import { createClientSchema, updateClientSchema } from '../validators/client.validator';
 
 const router = Router();
 

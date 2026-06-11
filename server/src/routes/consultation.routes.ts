@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { ConsultationController } from '../controllers/consultation.controller.js';
-import { upload } from '../middleware/upload.middleware.js';
-import { validate } from '../middleware/validate.middleware.js';
-import { protect } from '../middleware/auth.middleware.js';
-import { createConsultationSchema, updateConsultationSchema } from '../validators/consultation.validator.js';
+import { ConsultationController } from '../controllers/consultation.controller';
+import { upload } from '../middleware/upload.middleware';
+import { validate } from '../middleware/validate.middleware';
+import { protect } from '../middleware/auth.middleware';
+import { createConsultationSchema, updateConsultationSchema } from '../validators/consultation.validator';
 
 const router = Router();
 
