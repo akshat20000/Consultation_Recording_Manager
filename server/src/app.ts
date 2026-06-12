@@ -11,7 +11,7 @@ const app = express();
 
 // Standard middlewares
 app.use(cors({
-  origin: '*', // Allow all origins for testing only will change to dployed frontend link later
+  origin: 'https://consultation-recording-manager-ruby.vercel.app/', 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
