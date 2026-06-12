@@ -4,14 +4,9 @@ import { consultationApi } from '../../services/consultationApi';
 import { clientApi } from '../../services/clientApi';
 import { ConsultationCard } from './ConsultationCard';
 import {
-  Search,
   SlidersHorizontal,
   FolderLock,
   Trash2,
-  Calendar,
-  Clock,
-  Tag,
-  Users,
 } from 'lucide-react';
 
 export const ConsultationList: React.FC = () => {
@@ -105,7 +100,6 @@ export const ConsultationList: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Search */}
         <div className="relative w-full sm:max-w-md">
-          <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
           <input
             type="text"
             value={search}
@@ -150,7 +144,6 @@ export const ConsultationList: React.FC = () => {
               Filter By Client
             </label>
             <div className="relative">
-              <Users className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
               <select
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
@@ -172,7 +165,6 @@ export const ConsultationList: React.FC = () => {
               Filter By Tag
             </label>
             <div className="relative">
-              <Tag className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
               <input
                 type="text"
                 value={tagInput}
@@ -190,7 +182,6 @@ export const ConsultationList: React.FC = () => {
                 From Date
               </label>
               <div className="relative">
-                <Calendar className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
                 <input
                   type="date"
                   value={startDate}
@@ -204,7 +195,6 @@ export const ConsultationList: React.FC = () => {
                 To Date
               </label>
               <div className="relative">
-                <Calendar className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
                 <input
                   type="date"
                   value={endDate}
@@ -221,7 +211,6 @@ export const ConsultationList: React.FC = () => {
               Session Duration
             </label>
             <div className="relative">
-              <Clock className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
               <select
                 value={durationRange}
                 onChange={(e) => setDurationRange(e.target.value)}

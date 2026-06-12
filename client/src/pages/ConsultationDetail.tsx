@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { consultationApi } from '../services/consultationApi.js';
-import type { ConsultationData } from '../services/consultationApi.js';
-import { AudioPlayer } from '../components/audio/AudioPlayer.js';
-import { SummaryViewer } from '../components/consultation/SummaryViewer.js';
+import { consultationApi } from '../services/consultationApi';
+import type { ConsultationData } from '../services/consultationApi';
+import { AudioPlayer } from '../components/audio/AudioPlayer';
+import { SummaryViewer } from '../components/consultation/SummaryViewer';
 import {
   Calendar,
   Clock,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConsultationList } from '../components/consultation/ConsultationList.js';
+import { ConsultationList } from '../components/consultation/ConsultationList';
 
 export const Consultations: React.FC = () => {
   return (

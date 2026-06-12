@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.js';
-import { Sparkles, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Sparkles, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const { login } = useAuth();
@@ -61,7 +61,7 @@ export const Login: React.FC = () => {
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
+              
               <input
                 type="email"
                 value={email}
@@ -78,7 +78,7 @@ export const Login: React.FC = () => {
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
+              
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}

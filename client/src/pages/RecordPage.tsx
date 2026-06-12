@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { clientApi } from '../services/clientApi.js';
-import { consultationApi } from '../services/consultationApi.js';
-import { useAudioRecorder } from '../hooks/useAudioRecorder.js';
-import { AudioRecorder } from '../components/audio/AudioRecorder.js';
-import { ConsentModal } from '../components/consultation/ConsentModal.js';
+import { clientApi } from '../services/clientApi';
+import { consultationApi } from '../services/consultationApi';
+import { useAudioRecorder } from '../hooks/useAudioRecorder';
+import { AudioRecorder } from '../components/audio/AudioRecorder';
+import { ConsentModal } from '../components/consultation/ConsentModal';
 import {
-  Mic,
-  Users,
-  Tag,
   FileText,
   AlertCircle,
   Save,
@@ -147,7 +144,6 @@ export const RecordPage: React.FC = () => {
                 Associate Client
               </label>
               <div className="relative">
-                <Users className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
                 <select
                   value={clientId}
                   onChange={(e) => {
@@ -187,7 +183,6 @@ export const RecordPage: React.FC = () => {
                 Tags (Comma Separated)
               </label>
               <div className="relative">
-                <Tag className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
                 <input
                   type="text"
                   value={tagInput}

@@ -1,7 +1,6 @@
 import fs from 'fs';
 import OpenAI from 'openai';
 import { env, isOpenAIConfigured } from '../config/env';
-import { response } from 'express';
 
 const openai = isOpenAIConfigured
   ? new OpenAI({

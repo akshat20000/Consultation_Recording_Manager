@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { clientApi } from '../services/clientApi.js';
-import type { ClientData } from '../services/clientApi.js';
+import { clientApi } from '../services/clientApi';
+import type { ClientData } from '../services/clientApi';
 import {
   Plus,
-  Search,
   Edit2,
   Trash2,
   Mail,
@@ -243,7 +242,6 @@ export const Clients: React.FC = () => {
       <div className="space-y-4">
         {/* Search bar */}
         <div className="relative max-w-md">
-          <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
           <input
             type="text"
             value={search}

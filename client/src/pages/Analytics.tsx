@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { analyticsApi } from '../services/analyticsApi.js';
+import { analyticsApi } from '../services/analyticsApi';
 import {
   ResponsiveContainer,
   LineChart,
@@ -33,13 +33,22 @@ export const Analytics: React.FC = () => {
 
   // Tooltip custom style
   const customTooltipStyle = {
-    contentStyle: {
-      backgroundColor: '#0f172a', // Slate 900
-      borderColor: '#1e293b', // Slate 800
-      borderRadius: '12px',
-      color: '#f8fafc',
-    },
-  };
+  contentStyle: {
+    backgroundColor: '#334155', // slate-700 (much lighter)
+    border: '#64748b',
+    borderRadius: '7px',
+    color: '#ffffff',
+    boxShadow: '0 10px 25px rgba(0,0,0,0.4)',
+  },
+  itemStyle: {
+    color: '#ffffff',
+    fontWeight: 500,
+  },
+  labelStyle: {
+    color: '#f8fafc',
+    fontWeight: 700,
+  },
+};
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">

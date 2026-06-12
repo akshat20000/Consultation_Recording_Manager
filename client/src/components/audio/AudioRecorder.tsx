@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import type { UseAudioRecorderResult } from '../../hooks/useAudioRecorder.js';
+import type { UseAudioRecorderResult } from '../../hooks/useAudioRecorder';
 import { Mic, Pause, Play, Square, AlertCircle, RefreshCw } from 'lucide-react';
 
 interface AudioRecorderProps {

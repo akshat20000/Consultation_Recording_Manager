@@ -1,8 +1,8 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { analyticsApi } from '../services/analyticsApi.js';
-import { consultationApi } from '../services/consultationApi.js';
+import { analyticsApi } from '../services/analyticsApi';
+import { consultationApi } from '../services/consultationApi';
 import {
   Mic,
   FolderOpen,

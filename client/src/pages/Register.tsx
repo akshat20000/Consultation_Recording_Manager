@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.js';
-import { Sparkles, Mail, Lock, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Sparkles, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export const Register: React.FC = () => {
   const { register } = useAuth();
@@ -67,7 +67,7 @@ export const Register: React.FC = () => {
               Astrologer Name
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
+             
               <input
                 type="text"
                 value={name}
@@ -84,7 +84,6 @@ export const Register: React.FC = () => {
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
               <input
                 type="email"
                 value={email}
@@ -101,7 +100,6 @@ export const Register: React.FC = () => {
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-3.5 h-5 w-5 text-slate-500" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}

@@ -28,7 +28,6 @@ export class ConsultationController {
         .status(201)
         .json(new ApiResponse(201, consultation, 'Consultation recorded and saved successfully'));
     } catch (error) {
-      console.log(" consultaion.controller.ts,line31", error);
       return next(error);
     }
   }
