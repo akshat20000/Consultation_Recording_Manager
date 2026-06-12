@@ -1,4 +1,48 @@
+import fs from 'fs';
+import OpenAI from 'openai';
+import { env, isOpenAIConfigured } from '../config/env';
+
+const openai = isOpenAIConfigured ? new OpenAI({ apiKey: env.OPENAI_API_KEY }) : null;
+
 export class TranscriptService {
+  /**
+   * Generates a transcript from an audio file using OpenAI Whisper.
+   * Falls back to a mock transcript if OpenAI is not configured or the call fails.
+   */
+  static async generateTranscript(
+    localFilePath: string,
+    clientName: string,
+    title: string,
+    category?: string
+  ): Promise<string> {
+    if (!isOpenAIConfigured || !openai) {
+      console.warn('[Transcript] OPENAI_API_KEY not set. Using mock transcript.');
+      return this.generateMockTranscript(clientName, title, category);
+    }
+
+    try {
+      if (!fs.existsSync(localFilePath)) {
+        console.warn(`[Transcript] Audio file not found at ${localFilePath}. Using mock transcript.`);
+        return this.generateMockTranscript(clientName, title, category);
+      }
+
+      const transcription = await openai.audio.transcriptions.create({
+        file: fs.createReadStream(localFilePath),
+        model: 'whisper-1',
+      });
+
+      const text = transcription.text?.trim();
+      if (!text) {
+        return this.generateMockTranscript(clientName, title, category);
+      }
+
+      return text;
+    } catch (error) {
+      console.error('[Transcript] OpenAI transcription failed. Falling back to mock transcript.', error);
+      return this.generateMockTranscript(clientName, title, category);
+    }
+  }
+
   /**
    * Generates a realistic mock transcript based on consultation details
    */
@@ -36,7 +80,7 @@ export class TranscriptService {
       `Astrologer: You have a mild Manglik Dosha, but it is neutralized by the position of Jupiter. I advise offering water to the Sun every morning and keeping a fast on Thursdays to strengthen your relationship bonds.`
     ];
 
-    const textList = 
+    const textList =
       title.toLowerCase().includes('career') || (category && category.includes('Career'))
         ? careerDialogues
         : title.toLowerCase().includes('match') || title.toLowerCase().includes('relation') || (category && category.includes('Relationship'))

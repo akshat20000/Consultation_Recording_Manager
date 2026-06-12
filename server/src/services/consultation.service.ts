@@ -47,18 +47,19 @@ export class ConsultationService {
       throw new ApiError(400, 'Client consent is mandatory to create a recording');
     }
 
-    // 1. Upload audio
-    const uploadResult = await RecordingService.uploadRecording(localFilePath);
-
-    // 2. Generate transcript
-    const transcript = TranscriptService.generateMockTranscript(
+    // 1. Generate transcript (must happen before upload, which may delete the local file)
+    const transcript = await TranscriptService.generateTranscript(
+      localFilePath,
       client.name,
       data.title,
       data.tags && data.tags.length > 0 ? data.tags[0] : undefined
     );
 
-    // 3. Generate summary
-    const summary = SummaryService.generateMockSummary(transcript);
+    // 2. Generate summary
+    const summary = await SummaryService.generateSummary(transcript);
+
+    // 3. Upload audio
+    const uploadResult = await RecordingService.uploadRecording(localFilePath);
 
     // 4. Save consultation
     const consultation = await Consultation.create({
@@ -189,7 +190,7 @@ export class ConsultationService {
     // If transcript is updated, we re-run summarization too
     const updates: any = { ...updateData };
     if (updateData.transcript) {
-      updates.summary = SummaryService.generateMockSummary(updateData.transcript);
+      updates.summary = await SummaryService.generateSummary(updateData.transcript);
     }
 
     const consultation = await Consultation.findOneAndUpdate(

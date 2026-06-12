@@ -13,7 +13,11 @@ export const env = {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || '',
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || '',
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET || '',
+  OPENAI_API_KEY:process.env.OPENAI_API_KEY || '',
 };
+
+//check if openai is configured 
+export const isOpenAIConfigured = !!env.OPENAI_API_KEY;
 
 // Check if Cloudinary is configured
 export const isCloudinaryConfigured = !!(
