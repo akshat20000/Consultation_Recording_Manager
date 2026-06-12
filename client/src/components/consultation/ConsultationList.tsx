@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { consultationApi } from '../../services/consultationApi.js';
-import { clientApi } from '../../services/clientApi.js';
-import { ConsultationCard } from './ConsultationCard.js';
+import { consultationApi } from '../../services/consultationApi';
+import { clientApi } from '../../services/clientApi';
+import { ConsultationCard } from './ConsultationCard';
 import {
   Search,
   SlidersHorizontal,

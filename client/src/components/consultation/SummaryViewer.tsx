@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { ConsultationSummary } from '../../services/consultationApi.js';
+import type { ConsultationSummary } from '../../services/consultationApi';
 import {
   Sparkles,
   Compass,

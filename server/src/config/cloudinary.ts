@@ -9,6 +9,7 @@ if (isCloudinaryConfigured) {
   });
   console.log('[Upload] Cloudinary configured successfully.');
 } else {
+  console.log(env);
   console.warn('[Upload Warning] Cloudinary credentials not configured. Server will fall back to local file storage.');
 }
 

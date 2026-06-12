@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import type { ConsultationData } from '../../services/consultationApi.js';
+import type { ConsultationData } from '../../services/consultationApi';
 import { Clock, Calendar, User, Tag, ArrowRight, RotateCcw, Trash } from 'lucide-react';
 
 interface ConsultationCardProps {
