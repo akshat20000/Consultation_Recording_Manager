@@ -11,7 +11,7 @@ const app = express();
 
 // Standard middlewares
 app.use(cors({
-  origin: 'https://consultation-recording-manager-ruby.vercel.app/', 
+  origin: 'https://consultation-recording-manager-ruby.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
