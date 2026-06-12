@@ -1,8 +1,14 @@
 import fs from 'fs';
 import OpenAI from 'openai';
 import { env, isOpenAIConfigured } from '../config/env';
+import { response } from 'express';
 
-const openai = isOpenAIConfigured ? new OpenAI({ apiKey: env.OPENAI_API_KEY }) : null;
+const openai = isOpenAIConfigured
+  ? new OpenAI({
+    apiKey: env.OPENAI_API_KEY,
+    baseURL: 'https://api.groq.com/openai/v1',
+  })
+  : null;
 
 export class TranscriptService {
   /**
@@ -16,7 +22,7 @@ export class TranscriptService {
     category?: string
   ): Promise<string> {
     if (!isOpenAIConfigured || !openai) {
-      console.warn('[Transcript] OPENAI_API_KEY not set. Using mock transcript.');
+      console.warn('[Transcript] API Key not set. Using mock transcript.');
       return this.generateMockTranscript(clientName, title, category);
     }
 
@@ -26,19 +32,24 @@ export class TranscriptService {
         return this.generateMockTranscript(clientName, title, category);
       }
 
+      const fileExtension = localFilePath.split('.').pop()?.toLowerCase() || 'wav';
+
       const transcription = await openai.audio.transcriptions.create({
         file: fs.createReadStream(localFilePath),
-        model: 'whisper-1',
+        model: 'whisper-large-v3', 
       });
+      
 
       const text = transcription.text?.trim();
-      if (!text) {
+      if (!text || text.toLowerCase().includes('unable to listen')) {
+        console.warn('[Transcript] Received an empty or invalid transcription response. Falling back.');
         return this.generateMockTranscript(clientName, title, category);
       }
 
+      console.log('[Transcript] Successfully transcribed audio using Whisper.');
       return text;
     } catch (error) {
-      console.error('[Transcript] OpenAI transcription failed. Falling back to mock transcript.', error);
+      console.error('[Transcript] AI transcription failed. Falling back to mock transcript.', error);
       return this.generateMockTranscript(clientName, title, category);
     }
   }
@@ -84,8 +95,8 @@ export class TranscriptService {
       title.toLowerCase().includes('career') || (category && category.includes('Career'))
         ? careerDialogues
         : title.toLowerCase().includes('match') || title.toLowerCase().includes('relation') || (category && category.includes('Relationship'))
-        ? relationshipDialogues
-        : defaultDialogues;
+          ? relationshipDialogues
+          : defaultDialogues;
 
     return textList.join('\n\n');
   }

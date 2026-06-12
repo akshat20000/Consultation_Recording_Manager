@@ -2,7 +2,16 @@ import { IConsultationSummary } from '../models/Consultation';
 import OpenAI from 'openai';
 import { env, isOpenAIConfigured } from '../config/env';
 
-const openai = isOpenAIConfigured ? new OpenAI({ apiKey: env.OPENAI_API_KEY }) : null;
+const openai = isOpenAIConfigured
+  ? new OpenAI({
+    apiKey: env.OPENAI_API_KEY,
+    baseURL: 'https://api.groq.com/openai/v1',
+    defaultHeaders: {
+      'HTTP-Referer': 'http://localhost:3000',
+      'X-Title': 'Astrology Summary App',
+    }
+  })
+  : null;
 
 export class SummaryService {
   /**
@@ -17,7 +26,7 @@ export class SummaryService {
 
     try {
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'llama-3.3-70b-versatile',
         messages: [
           {
             role: 'system',
@@ -43,25 +52,32 @@ export class SummaryService {
         return this.generateMockSummary(transcript);
       }
 
-      const parsed = JSON.parse(content);
+      try {
+        let cleanContent = content.replace(/^```json\s*|```$/g, '').trim();
 
-      const summary: IConsultationSummary = {
-        keyTopics: Array.isArray(parsed.keyTopics) ? parsed.keyTopics : [],
-        recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations : [],
-        actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : [],
-        followUps: Array.isArray(parsed.followUps) ? parsed.followUps : [],
-        keywords: Array.isArray(parsed.keywords) ? parsed.keywords : [],
-        sentiment: typeof parsed.sentiment === 'string' ? parsed.sentiment : 'Neutral',
-      };
+        cleanContent = cleanContent
+          .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+          .replace(/\n/g, "\\n")
+          .replace(/\r/g, "\\r");
 
-      // Guard against empty AI output
-      if (summary.keyTopics.length === 0 && summary.recommendations.length === 0) {
+        const parsed = JSON.parse(cleanContent);
+
+        const summary: IConsultationSummary = {
+          keyTopics: Array.isArray(parsed.keyTopics) ? parsed.keyTopics : [],
+          recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations : [],
+          actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : [],
+          followUps: Array.isArray(parsed.followUps) ? parsed.followUps : [],
+          keywords: Array.isArray(parsed.keywords) ? parsed.keywords : [],
+          sentiment: typeof parsed.sentiment === 'string' ? parsed.sentiment : 'Neutral',
+        };
+
+        return summary;
+      } catch (parseError) {
+        console.error('[Summary] Failed to parse JSON even after cleaning. Falling back.', parseError);
         return this.generateMockSummary(transcript);
       }
-
-      return summary;
-    } catch (error) {
-      console.error('[Summary] OpenAI summarization failed. Falling back to mock summary.', error);
+    } catch (ApiError) {
+      console.error('[Summary] API call failed. Falling back.', ApiError);
       return this.generateMockSummary(transcript);
     }
   }
