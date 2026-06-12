@@ -1,63 +1,86 @@
 # Consultation Recording Manager
 
-A full-stack web application for astrologers to record, transcribe, and summarise client consultation sessions. Audio is automatically transcribed via Whisper and summarised into structured reports (key topics, recommendations, action items) using an LLM. The app works fully without any AI API keys via built-in mock fallbacks.
+A full-stack CRM for astrologers to record, transcribe, and summarise client consultation sessions. Audio is automatically transcribed via Whisper and turned into structured AI summaries (key topics, recommendations, action items, sentiment). The app works fully without any AI API keys via built-in deterministic fallbacks.
+
+**Live demo →** https://consultation-recording-manager-ruby.vercel.app
 
 ---
 
 ## Features
 
-- **Live audio recording** with real-time waveform visualisation and pause/resume support
-- **AI transcription** via Whisper (Groq-hosted) with rule-based mock fallback
-- **Structured AI summaries** — key topics, recommendations, action items, follow-ups, sentiment
+- **Live audio recording** — browser-based recording with pause/resume support
+- **AI transcription** — via Groq-hosted Whisper (`whisper-large-v3`), with a realistic domain-specific mock fallback
+- **Structured AI summaries** — key topics, recommendations, action items, follow-ups, keywords, and sentiment via Llama 3.3 70B, with a rule-based fallback
 - **Client management** — create and manage client profiles linked to consultations
-- **Consent enforcement** — consent must be logged (with timestamp) before a recording can be saved
-- **Advanced search & filters** — search by title, transcript, client name, tags, date range, duration
-- **Soft-delete + restore + hard-delete** — three-tier deletion with audit trail
-- **Analytics dashboard** — recordings over time, category distribution, avg duration trends (Recharts)
+- **Consent enforcement** — client consent is timestamped and verified at the service layer before any recording is saved
+- **Search & filters** — filter by title, transcript, client name, tags, date range, and duration
+- **Soft-delete + restore + permanent delete** — three-tier deletion strategy with full audit trail
+- **Analytics dashboard** — recordings over time, category breakdown, and average duration trends
 - **Export** — download consultation summaries as `.md` or `.txt`
-- **Cloudinary audio storage** with local-disk fallback for dev/demo environments
+- **Cloudinary audio storage** with automatic local-disk fallback for development
 
 ---
 
 ## Tech Stack
 
-**Frontend** — React 19, Vite, TypeScript, TanStack Query, React Router, Tailwind CSS, Recharts, Lucide
-
-**Backend** — Node.js, Express, TypeScript, MongoDB + Mongoose, JWT auth, Multer, Zod, Cloudinary SDK, OpenAI SDK (Groq endpoint)
+| Layer | Technologies |
+|---|---|
+| Frontend | React 19, Vite, TypeScript, TanStack Query, React Router v6, Tailwind CSS, Recharts, Lucide |
+| Backend | Node.js, Express, TypeScript, MongoDB + Mongoose, JWT, Multer, Zod, Cloudinary SDK |
+| AI | Groq API — `whisper-large-v3` (transcription), `llama-3.3-70b-versatile` (summarisation) |
 
 ---
 
 ## Project Structure
 
 ```
-├── client/          # React + Vite frontend
+├── client/                      # React + Vite frontend
 │   └── src/
-│       ├── pages/       # Dashboard, Consultations, Clients, Analytics, Record
-│       ├── components/  # AudioRecorder, AudioPlayer, ConsentModal, SummaryViewer
-│       ├── hooks/       # useAudioRecorder
-│       ├── services/    # Typed API clients (auth, clients, consultations, analytics)
-│       └── context/     # AuthContext
+│       ├── pages/               # Dashboard, Consultations, Clients, Analytics, RecordPage
+│       ├── components/
+│       │   ├── audio/           # AudioRecorder, AudioPlayer
+│       │   ├── consultation/    # ConsentModal, ConsultationCard, SummaryViewer
+│       │   └── layout/          # Layout, Navbar
+│       ├── services/            # Typed API clients (auth, clients, consultations, analytics)
+│       ├── hooks/               # useAudioRecorder
+│       └── context/             # AuthContext (JWT session)
 │
-└── server/          # Express + TypeScript backend
+└── server/                      # Express + TypeScript backend
     └── src/
-        ├── routes/      # Auth, clients, consultations, analytics
-        ├── controllers/ # Request handling + input validation
-        ├── services/    # Business logic (auth, client, consultation, transcript, summary, recording, analytics, export)
-        ├── models/      # Mongoose schemas: User, Client, Consultation
-        ├── middleware/  # JWT auth guard, error handler, upload (Multer), Zod validator
-        └── config/      # Env loading, DB connection, Cloudinary + OpenAI init
+        ├── routes/              # auth, clients, consultations, analytics
+        ├── controllers/         # Request handling + Zod validation
+        ├── services/            # Business logic per domain (see below)
+        ├── models/              # Mongoose schemas: User, Client, Consultation
+        ├── middleware/          # auth guard, error handler, Multer upload, Zod validator
+        ├── validators/          # Zod schemas for request bodies
+        ├── utils/               # ApiError, ApiResponse, constants
+        └── config/              # env, DB connection, Cloudinary init
 ```
+
+**Backend services:**
+
+| Service | Responsibility |
+|---|---|
+| `auth.service.ts` | Signup/login, JWT issuance, bcrypt hashing |
+| `client.service.ts` | Client CRUD, scoped per user |
+| `consultation.service.ts` | Full consultation lifecycle, search, soft-delete |
+| `transcript.service.ts` | Groq Whisper transcription + mock fallback |
+| `summary.service.ts` | Llama structured summarisation + rule-based fallback |
+| `recording.service.ts` | Cloudinary upload orchestration |
+| `cloudinary.service.ts` | Cloudinary SDK wrapper (upload, delete) |
+| `export.service.ts` | Generates `.md` / `.txt` export files |
+| `analytics.service.ts` | Aggregated KPIs and chart data |
 
 ---
 
-## Getting Started
+## Getting Started (Local Development)
 
 ### Prerequisites
 
 - Node.js 18+
-- MongoDB (local instance or a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) free cluster)
+- MongoDB — local instance or a free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster
 
-### 1. Clone the repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/<your-username>/Consultation_Recording_Manager.git
@@ -66,33 +89,47 @@ cd Consultation_Recording_Manager
 
 ### 2. Configure environment variables
 
-Create a `.env` file inside the `server/` directory:
+Create `server/.env` with the values below. Only `MONGO_URI` and `JWT_SECRET` are required — the app runs fully without the optional keys.
 
-```bash
-cp server/.env.example server/.env
+```env
+# ── Required ──────────────────────────────────────────────────────────────────
+PORT=5000
+MONGO_URI=mongodb://127.0.0.1:27017/consultation-recording-manager
+JWT_SECRET=replace_with_a_long_random_string_min_32_chars
+JWT_EXPIRES_IN=7d
+NODE_ENV=development
+
+# ── Optional: AI (Groq) ───────────────────────────────────────────────────────
+# Free key at https://console.groq.com — without this, mock transcripts/summaries are used
+OPENAI_API_KEY=
+
+# ── Optional: Cloudinary audio storage ───────────────────────────────────────
+# Without these, audio is served from server/uploads/ (fine for local dev)
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
-Then open `server/.env` and fill in your values (see the table below).
+Create `client/.env.local` for the frontend:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
 
 ### 3. Install dependencies
 
 ```bash
-# Backend
 cd server && npm install
-
-# Frontend
 cd ../client && npm install
 ```
 
-### 4. Run in development mode
-
-Open two terminals:
+### 4. Run
 
 ```bash
-# Terminal 1 — backend (runs on http://localhost:5000)
+# Terminal 1 — API server on http://localhost:5000
 cd server && npm run dev
 
-# Terminal 2 — frontend (runs on http://localhost:5173)
+# Terminal 2 — Frontend on http://localhost:5173
 cd client && npm run dev
 ```
 
@@ -100,97 +137,121 @@ Visit **http://localhost:5173**, register an account, and start recording.
 
 ---
 
-## Environment Variables
+## Deployment
 
-Copy the block below into `server/.env`. Only `MONGO_URI` and `JWT_SECRET` are required to run the app. The AI and Cloudinary variables are optional — the app falls back gracefully without them.
+The live demo is deployed as follows:
 
-```env
-# ── Required ──────────────────────────────────────────────
-PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/consultation-recording-manager
-JWT_SECRET=replace_with_a_long_random_string
-JWT_EXPIRES_IN=7d
-NODE_ENV=development
+| Part | Platform | Notes |
+|---|---|---|
+| Frontend | Vercel | `client/` directory, set `VITE_API_BASE_URL` to your backend URL |
+| Backend | Railway / Render | `server/` directory, set all env vars in the platform dashboard |
+| Database | MongoDB Atlas | Free M0 cluster |
+| Audio storage | Cloudinary | Free tier |
 
-# ── Optional: AI transcription + summarisation (Groq) ─────
-# Get a free key at https://console.groq.com
-# Without this key, the app uses realistic mock transcripts and summaries.
-OPENAI_API_KEY=
-
-# ── Optional: Cloudinary audio storage ────────────────────
-# Without these, audio files are stored locally in server/uploads/
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-```
-
-> **Note on `OPENAI_API_KEY`:** Despite the variable name, this key is used against the **Groq API** (`https://api.groq.com/openai/v1`), which exposes an OpenAI-compatible endpoint. The models used are `whisper-large-v3` for transcription and `llama-3.3-70b-versatile` for summarisation.
+CORS on the backend is locked to the Vercel frontend URL. When deploying your own instance, update the `origin` in `server/src/app.ts` to match your frontend domain.
 
 ---
 
-## API Overview
+## API Reference
 
-All routes are prefixed with `/api`. Protected routes require `Authorization: Bearer <token>`.
+All routes are prefixed `/api`. Protected routes require `Authorization: Bearer <token>`.
+
+### Auth
 
 | Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/auth/register` | — | Register a new astrologer account |
+|---|---|---|---|
+| POST | `/auth/register` | — | Register a new account |
 | POST | `/auth/login` | — | Login, returns JWT |
 | GET | `/auth/me` | ✓ | Get current user profile |
-| GET | `/clients` | ✓ | List clients |
-| POST | `/clients` | ✓ | Create client |
-| PUT | `/clients/:id` | ✓ | Update client |
-| DELETE | `/clients/:id` | ✓ | Delete client |
-| GET | `/consultations` | ✓ | List consultations (supports search + filters) |
-| POST | `/consultations` | ✓ | Create consultation (multipart/form-data with audio) |
-| GET | `/consultations/:id` | ✓ | Get consultation detail |
-| PUT | `/consultations/:id` | ✓ | Update title / notes / tags / transcript |
+
+### Clients
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/clients` | ✓ | List all clients |
+| POST | `/clients` | ✓ | Create a client |
+| PUT | `/clients/:id` | ✓ | Update a client |
+| DELETE | `/clients/:id` | ✓ | Delete a client |
+
+### Consultations
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/consultations` | ✓ | List consultations (search + filters) |
+| POST | `/consultations` | ✓ | Create — `multipart/form-data` with `audio` file |
+| GET | `/consultations/:id` | ✓ | Get detail |
+| PUT | `/consultations/:id` | ✓ | Update title, notes, tags, transcript |
 | DELETE | `/consultations/:id` | ✓ | Soft-delete |
-| PUT | `/consultations/:id/restore` | ✓ | Restore soft-deleted record |
-| DELETE | `/consultations/:id/hard` | ✓ | Permanently delete (removes audio too) |
-| GET | `/consultations/:id/export` | ✓ | Download summary as `.md` or `.txt` |
-| GET | `/analytics/metrics` | ✓ | Dashboard KPI cards |
-| GET | `/analytics/data` | ✓ | Chart data (uploads over time, categories, duration) |
+| POST | `/consultations/:id/restore` | ✓ | Restore soft-deleted record |
+| DELETE | `/consultations/:id/permanent` | ✓ | Permanently delete (removes audio from Cloudinary too) |
+| GET | `/consultations/:id/export` | ✓ | Download as `.md` or `.txt` (`?format=txt`) |
+
+### Analytics
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/analytics/metrics` | ✓ | KPI cards (totals, averages) |
+| GET | `/analytics/data` | ✓ | Chart data (uploads over time, categories, duration trend) |
+
+### Health
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/health` | — | Server health check |
 
 ---
 
 ## Consultation Creation Flow
 
 ```
-Audio file (Multer)
-    │
-    ▼
-TranscriptService.generateTranscript()   ← Groq Whisper / mock fallback
-    │
-    ▼
-SummaryService.generateSummary()         ← Groq Llama / rule-based fallback
-    │
-    ▼
-RecordingService.uploadRecording()       ← Cloudinary / local /uploads
-    │
-    ▼
-Consultation.create()                    ← Saved to MongoDB
+POST /api/consultations  (multipart/form-data)
+         │
+         ▼
+   Multer → temp local file
+         │
+         ▼
+   TranscriptService.generateTranscript()
+   └─ Groq Whisper (whisper-large-v3)
+   └─ fallback: deterministic mock dialogue based on category
+         │
+         ▼
+   SummaryService.generateSummary()
+   └─ Groq Llama (llama-3.3-70b-versatile) → structured JSON
+   └─ fallback: rule-based keyword matching
+         │
+         ▼
+   RecordingService.uploadRecording()
+   └─ Cloudinary (if configured) → returns URL + publicId
+   └─ fallback: serve from local /uploads
+         │
+         ▼
+   Consultation.create() → MongoDB
+   (temp file deleted from disk after upload)
 ```
 
-Transcription intentionally happens **before** the upload step so the local temp file still exists when Whisper reads it. The file is deleted from disk after the Cloudinary upload completes.
+> Transcription runs **before** the Cloudinary upload intentionally — so the local temp file still exists on disk when Whisper reads it.
 
 ---
 
-## Assumptions
+## Key Design Decisions
 
-- Single-user model — each astrologer manages their own clients and consultations; all data is scoped by `userId`.
-- Client consent (`consentGiven` + `consentTimestamp`) is mandatory and enforced at the service layer, not just the UI.
-- Transcription is synchronous during request handling — acceptable for short demo recordings. For production, this should move to a background job queue (e.g. BullMQ).
-- Soft-delete is used by default so records can be restored or audited; hard-delete is available as an explicit second step.
+**Consent at the service layer** — `consentGiven` and `consentTimestamp` are validated server-side before any recording is persisted. A missing or false consent flag returns a 400 error regardless of what the frontend sends.
+
+**Three-tier deletion** — soft-delete (`isDeleted: true`) is the default, allowing records to be restored. Permanent deletion is a separate explicit action that also removes the audio asset from Cloudinary.
+
+**Graceful AI fallback** — both `TranscriptService` and `SummaryService` detect a missing API key at startup and skip the API call entirely, returning domain-specific mock data. The app is fully demoable with zero API spend.
+
+**Synchronous transcription** — acceptable for short demo recordings. For production, this should move to a background queue (e.g. BullMQ) with a `status` field (`pending → processing → done / failed`).
 
 ---
 
-## Known Limitations & Future Improvements
+## Future Improvements
 
-- Move transcription/summarisation to an async background job with a status field (`pending / processing / done / failed`)
-- Add streaming/chunked transcription for long audio (Whisper has a 25 MB file-size limit)
-- Replace regex-based text search with a MongoDB `$text` index for performance
-- Add automated tests (unit tests for services, integration tests for routes)
-- Add rate limiting and request logging middleware for production readiness
-- Restrict CORS `origin` from `*` to the actual frontend domain in production
-- Add role-based access for team accounts (multiple astrologers sharing clients)
+- Background job queue for transcription (BullMQ + status polling)
+- Chunked / streaming transcription for long audio (Whisper 25 MB limit)
+- MongoDB `$text` index to replace in-memory regex search
+- Re-generate summary without re-transcribing from the UI
+- Automated tests — unit tests for services, integration tests for API routes
+- Rate limiting and structured request logging for production
+- Role-based access for team accounts (multiple astrologers sharing clients)
+- Export to PDF (building on `export.service.ts`)
