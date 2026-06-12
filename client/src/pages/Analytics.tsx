@@ -125,7 +125,7 @@ export const Analytics: React.FC = () => {
                     dataKey="value"
                     nameKey="name"
                   >
-                    {categoriesDistribution.map((entry, index) => (
+                    {categoriesDistribution.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
